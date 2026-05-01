@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* container */
+.container {
+  background: rgba(255,255,255,0.95);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* heading */
+h2 {
+  margin-bottom: 10px;
+  color: #444;
+}
+
+/* welcome text */
+#welcome {
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* button group */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* buttons */
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* hover effect */
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+/* result text */
+#result {
+  margin-top: 15px;
+  color: #444;
+}
+
+/* mobile */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px;
+  }
+}
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #ffffffaa;
+  cursor: pointer;
+}
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Dashboard</h2>
+
+  <p id="welcome"></p>
+
+  <div class="btn-group">
+    <button onclick="getData()">Get Data</button>
+    <button onclick="logout()">Logout</button>
+    <button onclick="deleteAccount()">Delete Account</button>
+    <button onclick="goBack()" class="back-btn">⬅ Back</button>
+  </div>
+
+  <p id="result"></p>
+</div>
+
+<script>
+/* show username */
+document.getElementById("welcome").innerText =
+  "Hello, " + (localStorage.getItem("username") || "User");
+
+/* get protected data */
+async function getData() {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("http://127.0.0.1:5000/dashboard", {
+    headers: {
+      "Authorization": token
+    }
+  });
+
+  const text = await res.text();
+  document.getElementById("result").innerText = text;
+}
+
+/* logout */
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+/* delete account */
+async function deleteAccount() {
+  const token = localStorage.getItem("token");
+
+  await fetch("http://127.0.0.1:5000/delete", {
+    method: "DELETE",
+    headers: {
+      "Authorization": token
+    }
+  });
+
+  alert("Account deleted ❌");
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+function goBack() {
+  window.history.back();
+}
+</script>
+
+</body>
+</html>

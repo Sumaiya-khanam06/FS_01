@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+
+  <!-- ✅ correct place -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* glow background */
+body::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.2);
+  filter: blur(100px);
+  top: 10%;
+  left: 10%;
+}
+
+/* card */
+.card {
+  position: relative;
+  background: rgba(255,255,255,0.9);
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 350px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  text-align: center;
+  animation: fadeIn 1s ease;
+}
+
+/* animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* heading */
+h2 {
+  margin-bottom: 20px;
+}
+
+/* inputs */
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 12px;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* focus glow */
+input:focus {
+  box-shadow: 0 0 8px rgba(255, 105, 180, 0.6);
+}
+
+/* button */
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* back button */
+.back-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: auto;
+  padding: 6px 10px;
+  font-size: 12px;
+  background: #ffffffaa;
+  color: black;
+}
+
+/* message */
+#msg {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* link */
+a {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #333;
+}
+
+/* mobile */
+@media (max-width: 480px) {
+  .card {
+    padding: 20px;
+  }
+}
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <!-- ✅ back button fixed -->
+  <button onclick="goBack()" class="back-btn">⬅</button>
+
+  <h2>Create Account</h2>
+
+  <input id="username" placeholder="Username">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <input id="confirmPassword" type="password" placeholder="Confirm Password">
+
+  <button onclick="signup()">Signup</button>
+
+  <!-- ✅ message added -->
+  <p id="msg"></p>
+
+  <a href="login.html">Already have an account?</a>
+
+</div>
+
+<script>
+async function signup() {
+  const usernameVal = document.getElementById("username").value.trim();
+  const emailVal = document.getElementById("email").value.trim();
+  const passwordVal = document.getElementById("password").value.trim();
+  const confirmPasswordVal = document.getElementById("confirmPassword").value.trim();
+
+  // ✅ check password match
+  if (passwordVal !== confirmPasswordVal) {
+    document.getElementById("msg").innerText = "Passwords do not match ❌";
+    document.getElementById("msg").style.color = "red";
+    return;
+  }
+
+  try {
+    const res = await fetch("http://127.0.0.1:5000/signup", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        username: usernameVal,
+        email: emailVal,
+        password: passwordVal
+      })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("msg").innerText = "Signup successful 🎉";
+    document.getElementById("msg").style.color = "green";
+
+  } catch (err) {
+    document.getElementById("msg").innerText = "Server error ❌";
+    document.getElementById("msg").style.color = "red";
+  }
+}
+
+/* back button */
+function goBack() {
+  window.history.back();
+}
+</script>
+
+</body>
+</html>
